@@ -1,0 +1,44 @@
+﻿@model ApiAuctionShop.Models.Auctions
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<form asp-controller="Account" asp-action="Image" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+
+    <div asp-validation-summary="ValidationSummary.All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="title" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="title" class="form-control" />
+        </div>
+
+        <label asp-for="description" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="description" class="form-control" />
+        </div>
+
+        <label asp-for="duration" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="duration" class="form-control" />
+        </div>
+
+        <label asp-for="price" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="price" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="file" name="file" accept="image/*" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-default">Send</button>
+        </div>
+    </div>
+</form>
+
+
