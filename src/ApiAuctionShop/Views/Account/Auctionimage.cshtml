@@ -1,0 +1,9 @@
+﻿@model List<ApiAuctionShop.Models.Auctions>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@foreach (var item in Model)
+{
+    <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(item.ImageData))" />
+}

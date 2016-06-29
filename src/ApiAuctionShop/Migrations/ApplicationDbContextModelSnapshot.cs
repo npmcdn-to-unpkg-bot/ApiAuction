@@ -21,13 +21,15 @@ namespace ApiAuctionShop.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<byte[]>("ImageData");
+
+                    b.Property<string>("ImageMimeType");
+
                     b.Property<string>("SignupId");
 
                     b.Property<string>("description");
 
                     b.Property<int>("duration");
-
-                    b.Property<byte[]>("image");
 
                     b.Property<int>("price");
 
@@ -86,6 +88,17 @@ namespace ApiAuctionShop.Migrations
                         .HasAnnotation("Relational:Name", "UserNameIndex");
 
                     b.HasAnnotation("Relational:TableName", "AspNetUsers");
+                });
+
+            modelBuilder.Entity("ApiAuctionShop.Models.Test", b =>
+                {
+                    b.Property<string>("ID");
+
+                    b.Property<string>("Testname");
+
+                    b.Property<string>("TodoItemID");
+
+                    b.HasKey("ID");
                 });
 
             modelBuilder.Entity("ApiAuctionShop.Models.TodoItem", b =>
@@ -188,6 +201,13 @@ namespace ApiAuctionShop.Migrations
                     b.HasOne("ApiAuctionShop.Models.Signup")
                         .WithMany()
                         .HasForeignKey("SignupId");
+                });
+
+            modelBuilder.Entity("ApiAuctionShop.Models.Test", b =>
+                {
+                    b.HasOne("ApiAuctionShop.Models.TodoItem")
+                        .WithMany()
+                        .HasForeignKey("TodoItemID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityRoleClaim<string>", b =>

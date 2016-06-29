@@ -1,13 +1,10 @@
 ﻿using ApiAuctionShop.Helpers;
-using ApiAuctionShop.Models;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Filters;
 using Projekt.Controllers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ApiAuctionShop.Attributes
 {
@@ -15,7 +12,7 @@ namespace ApiAuctionShop.Attributes
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var context = ((TodoItemsController)filterContext.Controller).context;
+           var context = ((TodoItemsController)filterContext.Controller).context;
 
             var req = filterContext.HttpContext.Request;
             var auth = req.Headers["Authorization"];
@@ -41,7 +38,7 @@ namespace ApiAuctionShop.Attributes
                 }
 
             }
-            filterContext.Result = new ContentResult { Content = "ERROR 403" };
+            filterContext.Result = new ContentResult { Content = "Error 403" };
         }
     }
 }

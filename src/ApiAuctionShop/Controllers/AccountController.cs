@@ -16,6 +16,8 @@ using System.Drawing;
 using ApiAuctionShop.Models;
 using ApiAuctionShop.Helpers;
 using ApiAuctionShop.Database;
+using System.Text;
+using System.Linq;
 
 namespace Projekt.Controllers
 {
@@ -39,12 +41,12 @@ namespace Projekt.Controllers
             _context = context;
         }
 
-
-
         [AllowAnonymous]
         public async Task<IActionResult> Urllogin(string id)
         {
-            string[] decryptedstring = StringCipher.Decrypt(id, Settings.HashPassword);
+            var decryptedstring_encoded = Encoding.Default.GetString(Convert.FromBase64String(id));
+            string[] decryptedstring = StringCipher.Decrypt(decryptedstring_encoded, Settings.HashPassword);
+
             if (!(decryptedstring[0] == ""))
             {
                 var result = await _signInManager.PasswordSignInAsync(decryptedstring[0], decryptedstring[0] + "0D?", isPersistent: false, lockoutOnFailure: false);
@@ -56,6 +58,7 @@ namespace Projekt.Controllers
             return RedirectToAction("Login", "Account");
         }
         
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
@@ -64,16 +67,18 @@ namespace Projekt.Controllers
             return View();
         }
 
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(Signup model, string returnUrl = null)
+        public async Task<IActionResult> Login(Signup model)
         {
-            ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
                 string encryptedstring = StringCipher.Encrypt(model.Email, Settings.HashPassword);
-                await EmailSender.SendEmailAsync(model.Email, "URL do zalogowania", "http://localhost:5000/Account/Urllogin/" + encryptedstring);
+                var encrypt2 = Convert.ToBase64String(Encoding.UTF8.GetBytes(encryptedstring));
+
+                await EmailSender.SendEmailAsync(model.Email, "URL do zalogowania", "http://projektgrupowy.azurewebsites.net/Account/Urllogin/" + encrypt2);
                 ModelState.AddModelError(string.Empty, "Wyslane");
 
                 return View(model);
@@ -96,7 +101,7 @@ namespace Projekt.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new Signup { UserName = model.Email, Email = model.Email, Auction = new List<Auctions>() { new Auctions() {description = "TEST" }}};
+                var user = new Signup { UserName = model.Email, Email = model.Email};
                               
                 var result = await _userManager.CreateAsync(user, model.Email + "0D?");
                 
@@ -122,13 +127,14 @@ namespace Projekt.Controllers
         }
 
         //////////////////TEST /////////////////////////
+        [Authorize]
         public IActionResult Image()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
-
         public async Task<ActionResult> Image(Auctions auction, IFormFile file = null)
         {
             if (file != null)
@@ -145,14 +151,13 @@ namespace Projekt.Controllers
                                 imageFactory.Load(fileStream).Resize(new ResizeLayer(new Size(100, 100)))
                                 .Format(new JpegFormat
                                 {
-                                    Quality = 50
+                                    Quality = 100
                                 })
-                                .Quality(50)
+                                .Quality(100)
                                 .Save(ms);
                             }
 
                             var fileBytes = ms.ToArray();
-                            //var imageBase64 = Convert.ToByte(fileBytes);
 
                             var _auction = new Auctions()
                             {
@@ -160,30 +165,37 @@ namespace Projekt.Controllers
                                 description = auction.description,
                                 duration = auction.duration,
                                 price = auction.price,
-                                image = fileBytes
+                                ImageData = fileBytes
                             };
 
-                            var user = await GetCurrentUserAsync();
-                            user.Auction.Add(_auction); // sypie
-                            
+                            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
 
-
+                            user.Auction.Add(_auction); 
+                        
                             var result = await _userManager.UpdateAsync(user);
 
                             if (result.Succeeded)
                             {
                                 return RedirectToAction("Index", "Home");
                             }
-
                         }
                     }
                 }
             }
             return RedirectToAction("Index", "Home");
         }
-        //////////////////////////////////////////////
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Auctionimage()
+        {
+            var list = _context.Auctions.ToList();
+            return View(list);
+        }
+
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOff()
         {
@@ -191,11 +203,6 @@ namespace Projekt.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
-        private async Task<Signup> GetCurrentUserAsync()
-        {
-            return await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
-        }
     }
 
 }

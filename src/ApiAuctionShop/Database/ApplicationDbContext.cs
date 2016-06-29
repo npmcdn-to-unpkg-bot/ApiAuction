@@ -11,12 +11,16 @@ namespace ApiAuctionShop.Database
 {
     public class ApplicationDbContext : IdentityDbContext<Signup>
     {
-        public DbSet<TodoItem> TodoItems { get; set; }
         public DbSet<Signup> Logins { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        public DbSet<Auctions> Auctions { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            modelBuilder.Entity<Auctions>()
+              .HasOne(p => p.Signup)
+              .WithMany(b => b.Auction);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

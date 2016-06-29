@@ -5,7 +5,7 @@ using Microsoft.Data.Entity.Metadata;
 
 namespace ApiAuctionShop.Migrations
 {
-    public partial class Initial : Migration
+    public partial class jfjfjdd : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -67,10 +67,11 @@ namespace ApiAuctionShop.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ImageData = table.Column<byte[]>(nullable: true),
+                    ImageMimeType = table.Column<string>(nullable: true),
                     SignupId = table.Column<string>(nullable: true),
                     description = table.Column<string>(nullable: true),
                     duration = table.Column<int>(nullable: false),
-                    image = table.Column<byte[]>(nullable: true),
                     price = table.Column<int>(nullable: false),
                     title = table.Column<string>(nullable: true)
                 },
@@ -122,6 +123,24 @@ namespace ApiAuctionShop.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+            migrationBuilder.CreateTable(
+                name: "Test",
+                columns: table => new
+                {
+                    ID = table.Column<string>(nullable: false),
+                    Testname = table.Column<string>(nullable: true),
+                    TodoItemID = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Test", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Test_TodoItem_TodoItemID",
+                        column: x => x.TodoItemID,
+                        principalTable: "TodoItem",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                 });
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
@@ -183,11 +202,12 @@ namespace ApiAuctionShop.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable("Auctions");
-            migrationBuilder.DropTable("TodoItem");
+            migrationBuilder.DropTable("Test");
             migrationBuilder.DropTable("AspNetRoleClaims");
             migrationBuilder.DropTable("AspNetUserClaims");
             migrationBuilder.DropTable("AspNetUserLogins");
             migrationBuilder.DropTable("AspNetUserRoles");
+            migrationBuilder.DropTable("TodoItem");
             migrationBuilder.DropTable("AspNetRoles");
             migrationBuilder.DropTable("AspNetUsers");
         }

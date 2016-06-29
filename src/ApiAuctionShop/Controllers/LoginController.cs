@@ -26,7 +26,6 @@ namespace Projekt.Controllers
             context = _context;
         }
 
-        //blokuj token dopoki nie potwierdzimy linkiem i nie mozemy sie zalogowac
         [HttpPost]
         public ObjectResult Post([FromBody] Signup value)
         {
@@ -46,7 +45,7 @@ namespace Projekt.Controllers
                 value.Email = value.Email;
                 value.IsTokenConfirmed = false;
                 value.ExpireTokenTime = null;
-                //value.ID = context.Logins.Max(record => record.ID) + 1;
+                value.Id = context.Logins.Max(record => record.Id) + 1;
                 context.Logins.Add(value);
                 context.SaveChanges();
                 EmailSender.SendEmailAsync(value.Email, "Token", "http://projektgrupowy.azurewebsites.net/Confirm/Get/" + encrypt2);

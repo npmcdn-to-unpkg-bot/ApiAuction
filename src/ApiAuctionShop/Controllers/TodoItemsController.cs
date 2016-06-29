@@ -19,7 +19,6 @@ namespace Projekt.Controllers
     [LoginAuthentication]
     public class TodoItemsController : Controller
     {
-
         public ApplicationDbContext context;
         public TodoItemsController(ApplicationDbContext _context)
         {
@@ -29,15 +28,54 @@ namespace Projekt.Controllers
         [HttpGet]
         public async Task<ObjectResult> Get()
         {
-            var list = context.TodoItems.ToList();
-           return new HttpOkObjectResult(list);
+            var list = context.Auctions.ToList();
+
+            var listfixed = new List<MobileAuctionSender>();
+
+            foreach (var el in list)
+            {
+                MobileAuctionSender dynamic = new MobileAuctionSender
+                {
+                    description = el.description,
+                    duration = el.duration,
+                    ID = el.ID,
+                    ImageData = el.ImageData,
+                    ImageMimeType = el.ImageMimeType,
+                    price = el.price,
+                    title = el.title
+                };
+                listfixed.Add(dynamic);
+            }
+
+            return new HttpOkObjectResult(listfixed);
         }
 
+        
+        //wyciagnac maila i dodac 
         [HttpPost]
-        public ObjectResult Post([FromBody] TodoItem value)
+        public ObjectResult Post([FromBody] MobileAuctionSender value)
         {
-            context.TodoItems.Add(value);
+            /**
+
+            tutaj wycagnac jeszcze maila trzeba 
+            var user = _userManager.Users.First(d => d.Email == .... );
+
+            user.Auction.Add(_auction);
+
+            await _userManager.UpdateAsync(user);
+            **/
+            var _auction = new Auctions()
+            {
+                title = value.title,
+                description = value.description,
+                duration = value.duration,
+                price = value.price,
+                ImageData = value.ImageData
+            };
+
+            context.Auctions.Add(_auction);
             context.SaveChanges();
+
             return new HttpOkObjectResult(value);
         }
 
