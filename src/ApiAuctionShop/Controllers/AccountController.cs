@@ -148,11 +148,8 @@ namespace Projekt.Controllers
                             using (var imageFactory = new ImageFactory())
                             {
                                 imageFactory.FixGamma = false;
-                                imageFactory.Load(fileStream).Resize(new ResizeLayer(new Size(100, 100)))
-                                .Format(new JpegFormat
-                                {
-                                    Quality = 100
-                                })
+                                imageFactory.Load(fileStream).Resize(new ResizeLayer(new Size(400, 400),ResizeMode.Stretch))
+                                .Format(new JpegFormat { })
                                 .Quality(100)
                                 .Save(ms);
                             }
@@ -187,9 +184,13 @@ namespace Projekt.Controllers
 
         [Authorize]
         [HttpGet]
-        public ActionResult Auctionimage()
+        public async Task<ActionResult> Auctionimage()
         {
-            var list = _context.Auctions.ToList();
+            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
+
+            var list = _context.Auctions.Where(d => d.SignupId == user.Id).ToList();
+
+            //var list = _context.Auctions.ToList();
             return View(list);
         }
 

@@ -40,6 +40,7 @@ namespace Projekt.Controllers
                 context.SaveChanges();
                 EmailSender.SendEmailAsync(value.Email, "Token", "http://projektgrupowy.azurewebsites.net/Confirm/Get/" + encrypt2);
             }
+            /**
             else
             {
                 value.Email = value.Email;
@@ -50,7 +51,7 @@ namespace Projekt.Controllers
                 context.SaveChanges();
                 EmailSender.SendEmailAsync(value.Email, "Token", "http://projektgrupowy.azurewebsites.net/Confirm/Get/" + encrypt2);
 
-            }
+            }**/
             return new HttpOkObjectResult(encrypt);
         }
 

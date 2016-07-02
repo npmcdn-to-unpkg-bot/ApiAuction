@@ -11,6 +11,16 @@ using ApiAuctionShop.Models;
 using Microsoft.AspNet.Authorization;
 using ApiAuctionShop.Attributes;
 using ApiAuctionShop.Database;
+using System.IO;
+using ImageProcessor;
+using ImageProcessor.Imaging;
+using System.Drawing;
+using ImageProcessor.Imaging.Formats;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Mvc.Filters;
+using System.Text;
+using ApiAuctionShop.Helpers;
+using Microsoft.AspNet.Http;
 
 namespace Projekt.Controllers
 {
@@ -19,16 +29,29 @@ namespace Projekt.Controllers
     [LoginAuthentication]
     public class TodoItemsController : Controller
     {
+        private readonly UserManager<Signup> _userManager;
+        private string email;
         public ApplicationDbContext context;
-        public TodoItemsController(ApplicationDbContext _context)
+        public TodoItemsController(ApplicationDbContext _context, UserManager<Signup> userManager, IHttpContextAccessor contextAccessor)
         {
             context = _context;
+            _userManager = userManager;
+
+            var auth = contextAccessor.HttpContext.Request.Headers["Authorization"];
+            int i = auth.ToString().IndexOf("Basic ");
+            string code = auth.ToString().Substring(i + "Basic ".Length);
+            var token = Encoding.Default.GetString(Convert.FromBase64String(code));
+            var encrypt = StringCipher.Decrypt(token, Settings.HashPassword);
+            email = encrypt[0];
         }
 
         [HttpGet]
         public async Task<ObjectResult> Get()
         {
-            var list = context.Auctions.ToList();
+
+            var user = _userManager.Users.First(d => d.Email == email);
+
+            var list = context.Auctions.Where(d => d.SignupId == user.Id).ToList();
 
             var listfixed = new List<MobileAuctionSender>();
 
@@ -50,35 +73,47 @@ namespace Projekt.Controllers
             return new HttpOkObjectResult(listfixed);
         }
 
-        
-        //wyciagnac maila i dodac 
         [HttpPost]
-        public ObjectResult Post([FromBody] MobileAuctionSender value)
+        public async Task<ObjectResult> Post([FromBody] MobileAuctionSender value)
         {
-            /**
 
-            tutaj wycagnac jeszcze maila trzeba 
-            var user = _userManager.Users.First(d => d.Email == .... );
-
-            user.Auction.Add(_auction);
-
-            await _userManager.UpdateAsync(user);
-            **/
-            var _auction = new Auctions()
+            Stream stream = new MemoryStream(value.ImageData);
+            using (var ms = new MemoryStream())
             {
-                title = value.title,
-                description = value.description,
-                duration = value.duration,
-                price = value.price,
-                ImageData = value.ImageData
-            };
+                using (var imageFactory = new ImageFactory())
+                {
+                    imageFactory.FixGamma = false;
+                    imageFactory.Load(stream).Resize(new ResizeLayer(new Size(400, 400), ResizeMode.Stretch))
+                    .Format(new JpegFormat
+                    {
+                        Quality = 100
+                    })
+                    .Quality(100)
+                    .Save(ms);
+                }
+                var fileBytes = ms.ToArray();
 
-            context.Auctions.Add(_auction);
-            context.SaveChanges();
+                var _auction = new Auctions()
+                {
+                    title = value.title,
+                    description = value.description,
+                    duration = value.duration,
+                    price = value.price,
+                    ImageData = fileBytes
+                };
 
-            return new HttpOkObjectResult(value);
+                var user = _userManager.Users.First(d => d.Email == email);
+
+                user.Auction.Add(_auction);
+
+                await _userManager.UpdateAsync(user);
+
+                //context.Auctions.Add(_auction);
+                //context.SaveChanges();
+
+                return new HttpOkObjectResult(value);
+            }
+
         }
-
-
     }
 }

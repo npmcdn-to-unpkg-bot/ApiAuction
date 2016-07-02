@@ -8,8 +8,6 @@ namespace ApiAuctionShop.Models
 {
     public class Signup : IdentityUser
     {
-       // [Key]
-       // public string ID { get; set; }
         public override string Email { get; set; }
         public string ExpireTokenTime { get; set; }
         public bool IsTokenConfirmed { get; set; }
@@ -35,5 +33,7 @@ namespace ApiAuctionShop.Models
 
         public Signup Signup { get; set; }
 
+        [Column("SignupId")]
+        public string SignupId { get; set; }
     }
 }
