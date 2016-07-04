@@ -31,17 +31,17 @@ namespace ApiAuctionShop.Models
 
         public string description { get; set; }
 
-        //zmienic na decimal(2)
+        //zmienic na decimal(2) //potem zobacze jak to wyglada
         public int price { get; set; }
 
         public string title { get; set; }
 
-        //public string authorEmail { get; set; }
-        //public string auctionState { get; set; } 
+        public string authorEmail { get; set; } // nie wiem czy to potrzebne koniecznie
+        public string auctionState { get; set; } 
         /// <summary>
         /// states: pending, ended, cancelled
         /// </summary>
-        //public string cathegory { get; set; }
+        public string cathegory { get; set; }
         public Signup Signup { get; set; }
 
         //id aukcji (rzeczywiste) 
