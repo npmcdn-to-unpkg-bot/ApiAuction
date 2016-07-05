@@ -45,14 +45,16 @@ namespace Projekt.Controllers
             email = encrypt[0];
         }
 
-        [HttpGet]
-        public async Task<ObjectResult> Get()
+        [HttpGet("{id}")] // poprawic tak samo w mobileauccount
+        public async Task<ObjectResult> Get(long id)
         {
+           // var x = DateTime.Now.Ticks;
+            DateTime dtTime = new DateTime(id);
 
             var user = _userManager.Users.First(d => d.Email == email);
 
-            var list = context.Auctions.Where(d => d.SignupId == user.Id).ToList();
-
+            var list = context.Auctions.Where(d => d.SignupId == user.Id).Where(d=>d.addedAuctionTime > dtTime).ToList();
+            
             var listfixed = new List<MobileAuctionSender>();
 
             foreach (var el in list)
@@ -65,7 +67,8 @@ namespace Projekt.Controllers
                     ImageData = el.ImageData,
                     ImageMimeType = el.ImageMimeType,
                     price = el.price,
-                    title = el.title
+                    title = el.title,
+                    addedAuctionTime = el.addedAuctionTime
                 };
                 listfixed.Add(dynamic);
             }
@@ -99,7 +102,8 @@ namespace Projekt.Controllers
                     description = value.description,
                     duration = value.duration,
                     price = value.price,
-                    ImageData = fileBytes
+                    ImageData = fileBytes,
+                    addedAuctionTime = DateTime.Now
                 };
 
                 var user = _userManager.Users.First(d => d.Email == email);

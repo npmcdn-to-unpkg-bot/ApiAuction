@@ -18,5 +18,6 @@ namespace ApiAuctionShop.Models
 
         public string title { get; set; }
 
+        public DateTime addedAuctionTime { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace ApiAuctionShop.Helpers
         private const int Keysize = 256;
         private const int DerivationIterations = 1000;
         private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        private static int _expirationMinutes = 3000;
+        private static int _expirationMinutes = 300000;
     
         private static long ConvertToTimestamp(DateTime value)
         {

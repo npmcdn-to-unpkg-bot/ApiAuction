@@ -25,6 +25,7 @@ namespace ApiAuctionShop.Models
         //zmiana na date
         public int duration { get; set; }
 
+        public DateTime addedAuctionTime { get; set; }
         //w perspektywie: wiecej zdjec
         public byte[] ImageData { get; set; }
         public string ImageMimeType { get; set; }

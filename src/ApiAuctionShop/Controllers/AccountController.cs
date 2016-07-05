@@ -165,7 +165,8 @@ namespace Projekt.Controllers
                                 description = auction.description,
                                 duration = auction.duration,
                                 price = auction.price,
-                                ImageData = fileBytes
+                                ImageData = fileBytes,
+                                addedAuctionTime = DateTime.Now 
                             };
 
                             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
