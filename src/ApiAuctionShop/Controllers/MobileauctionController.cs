@@ -21,6 +21,7 @@ using Microsoft.AspNet.Mvc.Filters;
 using System.Text;
 using ApiAuctionShop.Helpers;
 using Microsoft.AspNet.Http;
+using System.Linq;
 
 namespace Projekt.Controllers
 {
@@ -48,7 +49,6 @@ namespace Projekt.Controllers
         [HttpGet("{id}")] // poprawic tak samo w mobileauccount
         public async Task<ObjectResult> Get(long id)
         {
-           // var x = DateTime.Now.Ticks;
             DateTime dtTime = new DateTime(id);
 
             var user = _userManager.Users.First(d => d.Email == email);
@@ -115,6 +115,38 @@ namespace Projekt.Controllers
                 return new HttpOkObjectResult(value);
             }
 
+        }
+
+        /// <summary>
+        /// naprawic
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        public async Task<ObjectResult> Edit (int id, [FromBody] MobileAuctionSender value)
+        {
+            var _auction = new Auctions()
+            {
+                title = value.title,
+                description = value.description,
+                duration = value.duration,
+                price = value.price,
+                addedAuctionTime = DateTime.Now
+            };
+
+            var user = _userManager.Users.First(d => d.Email == email);
+
+            var element = context.Auctions.Where(d => d.SignupId == user.Id).Where(d => d.ID == id).ToList().First();
+
+            element.price = value.price;
+            element.title = value.title;
+            element.description = element.description;
+            element.duration = element.duration;
+
+            context.SaveChanges();
+
+            return new HttpOkObjectResult(value);
         }
     }
 }
