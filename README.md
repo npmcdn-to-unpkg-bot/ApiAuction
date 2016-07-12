@@ -1,4 +1,4 @@
-# ApiAuction
+# Projekt Grupowy Serwis Aukcyjny
 
 
 - Added Chat
