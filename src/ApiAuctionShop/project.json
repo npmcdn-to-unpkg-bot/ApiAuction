@@ -8,7 +8,7 @@
     "dependencies": {
         "EntityFramework.Commands": "7.0.0-rc1-final",
         "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
-        "EntityFramework.Core" : "7.0.0-rc1-final",
+        "EntityFramework.Core": "7.0.0-rc1-final",
         "Microsoft.ApplicationInsights.AspNet": "1.0.0-rc1",
         "Microsoft.AspNet.Authentication.Cookies": "1.0.0-rc1-final",
         "Microsoft.AspNet.Diagnostics.Entity": "7.0.0-rc1-final",
@@ -30,7 +30,8 @@
         "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc1-final",
         "Sendgrid": "6.3.4",
         "Microsoft.AspNet.WebSockets.Server": "1.0.0-rc1-final",
-        "ImageProcessor": "2.4.1"
+        "ImageProcessor": "2.4.1",
+        "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4"
     },
 
     "commands": {

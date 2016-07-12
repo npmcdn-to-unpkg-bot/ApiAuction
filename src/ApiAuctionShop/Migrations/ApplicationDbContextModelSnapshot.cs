@@ -47,6 +47,24 @@ namespace ApiAuctionShop.Migrations
                     b.HasKey("ID");
                 });
 
+            modelBuilder.Entity("ApiAuctionShop.Models.Chat", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("author");
+
+                    b.Property<string>("message");
+
+                    b.Property<DateTime>("messagedate");
+
+                    b.Property<bool>("sendedmsg");
+
+                    b.Property<string>("toperson");
+
+                    b.HasKey("ID");
+                });
+
             modelBuilder.Entity("ApiAuctionShop.Models.Signup", b =>
                 {
                     b.Property<string>("Id");

@@ -7,9 +7,9 @@ using ApiAuctionShop.Database;
 
 namespace ApiAuctionShop.Migrations
 {
-    [DbContext(typeof(Database.ApplicationDbContext))]
-    [Migration("20160628130923_jfjfjdd")]
-    partial class jfjfjdd
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20160711185235_Chatfix")]
+    partial class Chatfix
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,7 +26,16 @@ namespace ApiAuctionShop.Migrations
 
                     b.Property<string>("ImageMimeType");
 
-                    b.Property<string>("SignupId");
+                    b.Property<string>("SignupId")
+                        .HasAnnotation("Relational:ColumnName", "SignupId");
+
+                    b.Property<DateTime>("addedAuctionTime");
+
+                    b.Property<string>("auctionState");
+
+                    b.Property<string>("authorEmail");
+
+                    b.Property<string>("cathegory");
 
                     b.Property<string>("description");
 
@@ -35,6 +44,24 @@ namespace ApiAuctionShop.Migrations
                     b.Property<int>("price");
 
                     b.Property<string>("title");
+
+                    b.HasKey("ID");
+                });
+
+            modelBuilder.Entity("ApiAuctionShop.Models.Chat", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("author");
+
+                    b.Property<string>("message");
+
+                    b.Property<DateTime>("messagedate");
+
+                    b.Property<bool>("sendedmsg");
+
+                    b.Property<string>("toperson");
 
                     b.HasKey("ID");
                 });
@@ -75,6 +102,8 @@ namespace ApiAuctionShop.Migrations
 
                     b.Property<string>("SecurityStamp");
 
+                    b.Property<string>("Token");
+
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
@@ -89,30 +118,6 @@ namespace ApiAuctionShop.Migrations
                         .HasAnnotation("Relational:Name", "UserNameIndex");
 
                     b.HasAnnotation("Relational:TableName", "AspNetUsers");
-                });
-
-            modelBuilder.Entity("ApiAuctionShop.Models.Test", b =>
-                {
-                    b.Property<string>("ID");
-
-                    b.Property<string>("Testname");
-
-                    b.Property<string>("TodoItemID");
-
-                    b.HasKey("ID");
-                });
-
-            modelBuilder.Entity("ApiAuctionShop.Models.TodoItem", b =>
-                {
-                    b.Property<string>("ID");
-
-                    b.Property<bool>("Done");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Notes");
-
-                    b.HasKey("ID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityRole", b =>
@@ -202,13 +207,6 @@ namespace ApiAuctionShop.Migrations
                     b.HasOne("ApiAuctionShop.Models.Signup")
                         .WithMany()
                         .HasForeignKey("SignupId");
-                });
-
-            modelBuilder.Entity("ApiAuctionShop.Models.Test", b =>
-                {
-                    b.HasOne("ApiAuctionShop.Models.TodoItem")
-                        .WithMany()
-                        .HasForeignKey("TodoItemID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityRoleClaim<string>", b =>

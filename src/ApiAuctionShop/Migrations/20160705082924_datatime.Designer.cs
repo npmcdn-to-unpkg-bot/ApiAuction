@@ -7,7 +7,7 @@ using ApiAuctionShop.Database;
 
 namespace ApiAuctionShop.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(Database.ApplicationDbContext))]
     [Migration("20160705082924_datatime")]
     partial class datatime
     {
